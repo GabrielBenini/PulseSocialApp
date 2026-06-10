@@ -2,6 +2,7 @@ package com.example.pulsesocial.feature.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,17 +20,20 @@ import androidx.compose.material3.AppBarRow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pulsesocial.feature.navigation.AppNavigation
 import com.example.pulsesocial.feature.navigation.NavGraph
+import com.example.pulsesocial.ui.theme.PulseSocialTheme
 
 @Composable
 fun MainScreen() {
@@ -44,19 +48,16 @@ fun MainScreen() {
         AppNavigation.PostScreen.route
     )
 
-
-
-    NavGraph(
-        navController = navController
-    )
-
     Scaffold(
-
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (currentRoute in bottomBarRouters) {
 
                 BottomAppBar(
-                    modifier = Modifier.height(80.dp)
+                    modifier = Modifier
+                        .height(80.dp),
+                    containerColor = MaterialTheme.colorScheme.surface
+
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

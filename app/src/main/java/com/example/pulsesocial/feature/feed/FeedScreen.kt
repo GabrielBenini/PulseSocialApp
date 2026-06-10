@@ -1,20 +1,12 @@
 package com.example.pulsesocial.feature.feed
 
-import android.view.Surface
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pulsesocial.feature.components.PostCard
-import com.example.pulsesocial.feature.navigation.AppNavigation
 
 @Composable
 fun FeedScreen(
@@ -43,8 +34,12 @@ fun FeedScreen(
         viewModel.uiEffect.collect { effect ->
             when (effect) {
 
-                is FeedContract.Effect.NavigateToComments -> {
-                    navController.navigate("${AppNavigation.CommentsScreen}/${effect.postId}")
+//                is FeedContract.Effect.NavigateToComments -> {
+//                    navController.navigate("${AppNavigation.CommentsScreen}/${effect.postId}")
+//                }
+
+                is FeedContract.Effect.ShowSuccess -> {
+                    viewModel.handleEvent(FeedContract.Event.OnRefresh)
                 }
 
                 is FeedContract.Effect.ShowError -> {
@@ -59,9 +54,10 @@ fun FeedScreen(
         onLikeClick = { postId ->
             viewModel.handleEvent(FeedContract.Event.OnLikeClick(postId))
         },
-        onCommentClick = { postId ->
-            viewModel.handleEvent(FeedContract.Event.OnCommentClick(postId))
-        },
+
+        onDeletePostClick = { postId ->
+            viewModel.handleEvent(FeedContract.Event.OnDeletePostClick(postId))
+        }
     )
 }
 
@@ -69,13 +65,14 @@ fun FeedScreen(
 fun FeedScreenContent(
     state: FeedContract.State,
     onLikeClick: (Long) -> Unit,
-    onCommentClick: (Long) -> Unit,
+    onDeletePostClick: (Long) -> Unit
 ) {
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding(),
+        color = MaterialTheme.colorScheme.background
 
     ) {
 
@@ -92,7 +89,7 @@ fun FeedScreenContent(
                 PostCard(
                     post = post,
                     onLikeClick = { onLikeClick(post.id) },
-                    onCommentClick = { onCommentClick(post.id) }
+                    onDeletePostClick = {onDeletePostClick(post.id)}
                 )
             }
         }
@@ -106,6 +103,6 @@ fun FeedPreview() {
     FeedScreenContent(
         state = FeedContract.State(posts = emptyList()),
         onLikeClick = {},
-        onCommentClick = {},
+        onDeletePostClick = {}
     )
 }

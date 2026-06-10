@@ -26,5 +26,9 @@ class PostRepository @Inject constructor(
         return api.unlikePost(postId, userId)
     }
 
+    suspend fun deletePost(postId: Long){
+        return api.deletePost(postId)
+    }
+
 
 }

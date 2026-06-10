@@ -10,5 +10,6 @@ data class PostResponse(
     val userId: Long,
     val likesCount: Int,
     val commentsCount: Int,
-    val likedByUser: Boolean
+    val likedByUser: Boolean,
+    val author: UserSummary
 )

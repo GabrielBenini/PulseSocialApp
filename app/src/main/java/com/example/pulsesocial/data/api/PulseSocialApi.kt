@@ -40,4 +40,9 @@ interface PulseSocialApi {
     suspend fun login(
         @Body request: LoginRequest
     ): LoginResponse
+
+    @DELETE("/posts/{postId}")
+    suspend fun deletePost(
+        @Path("postId") postId: Long
+    )
 }

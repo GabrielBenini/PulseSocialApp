@@ -38,13 +38,15 @@ class FeedViewModel @Inject constructor(
                 likePost(event.postId)
             }
 
-            is FeedContract.Event.OnCommentClick -> {
-                navigateToComments(event.postId)
-            }
 
-            FeedContract.Event.OnRefresh -> {
+            is FeedContract.Event.OnRefresh -> {
                 loadPosts()
             }
+
+            is FeedContract.Event.OnDeletePostClick -> {
+                deletePost(event.postId)
+            }
+
         }
     }
 
@@ -74,6 +76,26 @@ class FeedViewModel @Inject constructor(
 
                 _uiEffect.emit(
                     FeedContract.Effect.ShowError("Erro ao carregar posts")
+                )
+            }
+        }
+    }
+
+    private fun deletePost(postId: Long){
+
+        viewModelScope.launch {
+
+            try {
+                repository.deletePost(postId)
+
+                _uiEffect.emit(
+                    FeedContract.Effect.ShowSuccess("Post excluido com successo.")
+                )
+
+            } catch (e: Exception){
+
+                _uiEffect.emit(
+                    FeedContract.Effect.ShowError("Erro ao excluir post")
                 )
             }
         }
@@ -115,14 +137,6 @@ class FeedViewModel @Inject constructor(
                     FeedContract.Effect.ShowError("Erro ao curtir o post")
                 )
             }
-        }
-    }
-
-    private fun navigateToComments(postId: Long) {
-        viewModelScope.launch {
-            _uiEffect.emit(
-                FeedContract.Effect.NavigateToComments(postId)
-            )
         }
     }
 
