@@ -2,7 +2,6 @@ package com.example.pulsesocial.feature.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pulsesocial.data.datastore.UserPreferencesRepository
 import com.example.pulsesocial.data.repository.PostRepository
 import com.example.pulsesocial.data.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,7 +53,7 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch {
 
             _uiState.value = _uiState.value.copy(
-                isLoading = true
+                isLoading = true,
             )
 
             try {
@@ -65,13 +63,18 @@ class FeedViewModel @Inject constructor(
 
                 _uiState.value = _uiState.value.copy(
                     posts = posts,
-                    isLoading = false
+                    currentUserId = userId,
+                    isLoading = false,
+                )
+
+                _uiEffect.emit(
+                    FeedContract.Effect.ShowSuccess(message = "Sucesso ao Carregar Posts")
                 )
 
             } catch (e: Exception) {
 
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false
+                    isLoading = false,
                 )
 
                 _uiEffect.emit(
@@ -86,7 +89,10 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                repository.deletePost(postId)
+
+                val userId = sessionManager.getUserId() ?: return@launch
+
+                repository.deletePost(postId, userId)
 
                 _uiEffect.emit(
                     FeedContract.Effect.ShowSuccess("Post excluido com successo.")
@@ -139,5 +145,4 @@ class FeedViewModel @Inject constructor(
             }
         }
     }
-
 }

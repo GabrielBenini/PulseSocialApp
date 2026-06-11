@@ -6,7 +6,8 @@ object FeedContract {
 
     data class State(
         val posts: List<PostResponse> = emptyList(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val currentUserId: Long? = null,
     )
 
     sealed class Event {

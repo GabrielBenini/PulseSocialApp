@@ -2,41 +2,42 @@ package com.example.pulsesocial.feature.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AppBarRow
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.pulsesocial.feature.feed.FeedContract
+import com.example.pulsesocial.feature.feed.FeedViewModel
 import com.example.pulsesocial.feature.navigation.AppNavigation
 import com.example.pulsesocial.feature.navigation.NavGraph
-import com.example.pulsesocial.ui.theme.PulseSocialTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    feedViewModel: FeedViewModel = hiltViewModel()
+) {
 
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -48,8 +49,34 @@ fun MainScreen() {
         AppNavigation.PostScreen.route
     )
 
+    LaunchedEffect(Unit) {
+        feedViewModel.uiEffect.collect { effect ->
+            when (effect) {
+
+                is FeedContract.Effect.ShowSuccess -> {
+                    feedViewModel.handleEvent(FeedContract.Event.OnRefresh)
+                }
+
+                is FeedContract.Effect.ShowError -> {
+                    // futuramente snackbar
+                }
+            }
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Pulse",
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                },
+            )
+        },
         bottomBar = {
             if (currentRoute in bottomBarRouters) {
 
@@ -65,39 +92,74 @@ fun MainScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
+                            enabled = currentRoute != AppNavigation.FeedScreen.route,
                             onClick = {
                                 navController.navigate(AppNavigation.FeedScreen.route)
                             }
                         ) {
-                            Icon(Icons.Default.Home, contentDescription = "Home")
+                            Icon(
+                                Icons.Outlined.Home,
+                                contentDescription = "Home",
+                                tint = if (currentRoute == AppNavigation.FeedScreen.route) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
                         }
 
                         IconButton(
                             onClick = {}
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = "Descobrir")
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Descobrir",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
 
                         IconButton(
+                            enabled = currentRoute != AppNavigation.PostScreen.route,
                             onClick = {
                                 navController.navigate(AppNavigation.PostScreen.route)
                             }
                         ) {
-                            Icon(Icons.Default.AddCircleOutline, contentDescription = "Create Post")
+                            Icon(
+                                Icons.Default.AddCircleOutline,
+                                contentDescription = "Create Post",
+                                tint = if (currentRoute == AppNavigation.PostScreen.route) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
                         }
 
                         IconButton(
                             onClick = {}
                         ) {
-                            Icon(Icons.Default.NotificationsNone, contentDescription = "Notifications")
+                            Icon(
+                                Icons.Default.NotificationsNone,
+                                contentDescription = "Notifications",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
 
                         IconButton(
+                            enabled = currentRoute != AppNavigation.ProfileScreen.route,
                             onClick = {
                                 navController.navigate(AppNavigation.ProfileScreen.route)
                             }
                         ) {
-                            Icon(Icons.Default.PersonOutline, contentDescription = "Profile")
+                            Icon(
+                                Icons.Default.PersonOutline,
+                                contentDescription = "Profile",
+                                tint = if (currentRoute == AppNavigation.ProfileScreen.route) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
                         }
                     }
                 }

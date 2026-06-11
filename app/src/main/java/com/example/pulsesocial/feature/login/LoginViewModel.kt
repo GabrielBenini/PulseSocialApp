@@ -54,6 +54,10 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
 
+            _uiState.value = _uiState.value.copy(
+                isLoading = true
+            )
+
             try {
 
                 val response = repository.login(
@@ -72,7 +76,15 @@ class LoginViewModel @Inject constructor(
                 _uiEffect.emit(
                     LoginContract.Effect.OnLoginSuccess("Sucesso ao Logar")
                 )
+
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false
+                )
             } catch (e: Exception) {
+
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false
+                )
 
                 Log.e("POST_ERROR", e.message.toString())
 

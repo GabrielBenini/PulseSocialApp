@@ -43,6 +43,7 @@ interface PulseSocialApi {
 
     @DELETE("/posts/{postId}")
     suspend fun deletePost(
-        @Path("postId") postId: Long
+        @Path("postId") postId: Long,
+        @Query("userId") userId: Long
     )
 }

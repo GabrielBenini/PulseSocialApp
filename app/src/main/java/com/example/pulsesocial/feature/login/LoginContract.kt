@@ -6,7 +6,8 @@ object LoginContract {
 
     data class State(
         val email: String = "",
-        val password: String = ""
+        val password: String = "",
+        val isLoading: Boolean = false
     )
 
     sealed class Event{

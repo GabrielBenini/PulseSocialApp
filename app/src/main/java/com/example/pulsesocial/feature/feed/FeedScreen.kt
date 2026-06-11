@@ -34,12 +34,8 @@ fun FeedScreen(
         viewModel.uiEffect.collect { effect ->
             when (effect) {
 
-//                is FeedContract.Effect.NavigateToComments -> {
-//                    navController.navigate("${AppNavigation.CommentsScreen}/${effect.postId}")
-//                }
-
                 is FeedContract.Effect.ShowSuccess -> {
-                    viewModel.handleEvent(FeedContract.Event.OnRefresh)
+                    // futuramente snackbar
                 }
 
                 is FeedContract.Effect.ShowError -> {
@@ -70,14 +66,12 @@ fun FeedScreenContent(
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
+            .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
 
     ) {
 
         LazyColumn(
-            modifier = Modifier.padding(),
             verticalArrangement = Arrangement.Top
         ) {
 
@@ -88,6 +82,7 @@ fun FeedScreenContent(
 
                 PostCard(
                     post = post,
+                    currentUserId = state.currentUserId ?: -1,
                     onLikeClick = { onLikeClick(post.id) },
                     onDeletePostClick = {onDeletePostClick(post.id)}
                 )

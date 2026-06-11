@@ -3,7 +3,9 @@ package com.example.pulsesocial.feature.post
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -15,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pulsesocial.feature.navigation.AppNavigation
@@ -75,9 +78,18 @@ fun PostScreenContent(
             )
 
             Button(
-                onClick = onPostClick
+                onClick = onPostClick,
+                enabled = !state.isLoading
             ) {
-                Text("Publicar")
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Publicar")
+                }
             }
         }
     }

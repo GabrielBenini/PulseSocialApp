@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pulsesocial.feature.login.LoginContract.Event.OnEmailChange
 import com.example.pulsesocial.feature.login.LoginContract.Event.OnPassChange
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(
@@ -29,7 +32,7 @@ fun LoginScreen(
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { event ->
-            when(event) {
+            when (event) {
                 is LoginContract.Effect.OnLoginSuccess -> {
                     onLoginClicked()
                 }
@@ -51,22 +54,34 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = state.email,
-            onValueChange = {viewModel.handleEvent(OnEmailChange(it))},
+            onValueChange = { viewModel.handleEvent(OnEmailChange(it)) },
             placeholder = { Text("Digite seu email") }
         )
 
         OutlinedTextField(
             value = state.password,
-            onValueChange = {viewModel.handleEvent(OnPassChange(it))},
+            onValueChange = { viewModel.handleEvent(OnPassChange(it)) },
             placeholder = { Text("Digite sua senha") }
         )
+
 
         Button(
             onClick = {
                 viewModel.handleEvent(LoginContract.Event.OnLoginClick)
-            }
+            },
+            enabled = !state.isLoading
         ) {
-            Text("Login")
+
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            } else {
+
+                Text("Login")
+            }
         }
     }
 
