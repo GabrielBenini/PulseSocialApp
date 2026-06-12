@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -97,15 +100,19 @@ fun MainScreen(
                                 navController.navigate(AppNavigation.FeedScreen.route)
                             }
                         ) {
-                            Icon(
-                                Icons.Outlined.Home,
-                                contentDescription = "Home",
-                                tint = if (currentRoute == AppNavigation.FeedScreen.route) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                }
-                            )
+                            if (currentRoute == AppNavigation.FeedScreen.route){
+                                Icon(
+                                    Icons.Filled.Home,
+                                    contentDescription = "Home Filled",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            } else {
+                                Icon(
+                                    Icons.Outlined.Home,
+                                    contentDescription = "Home Outlined",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
 
                         IconButton(
@@ -151,15 +158,19 @@ fun MainScreen(
                                 navController.navigate(AppNavigation.ProfileScreen.route)
                             }
                         ) {
-                            Icon(
-                                Icons.Default.PersonOutline,
-                                contentDescription = "Profile",
-                                tint = if (currentRoute == AppNavigation.ProfileScreen.route) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                }
-                            )
+                            if (currentRoute == AppNavigation.ProfileScreen.route){
+                                Icon(
+                                    Icons.Filled.Person,
+                                    contentDescription = "Home Filled",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            } else {
+                                Icon(
+                                    Icons.Outlined.Person,
+                                    contentDescription = "Home Outlined",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }
