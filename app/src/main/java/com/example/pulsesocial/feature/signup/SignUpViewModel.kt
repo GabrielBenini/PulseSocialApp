@@ -64,7 +64,7 @@ class SignUpViewModel @Inject constructor(
             is SignUpContract.Event.OnPasswordChange -> {
 
                 val error = when {
-                    event.password.isBlank() -> "Senha é obrigatória"
+                    event.password.isEmpty() -> null
                     event.password.length < 8 -> "Senha precisa ter no mínimo 8 caracteres"
                     !event.password.any{ it.isDigit() } -> "Senha precisa ter um numero"
                     !event.password.any{ it.isUpperCase() } -> "Senha precisa ter uma letra maiuscula"
@@ -99,6 +99,12 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpContract.Event.OnCreateClick -> {
                 createAccount()
+            }
+
+            is SignUpContract.Event.TooglePasswordVisibility -> {
+                _uiState.value = _uiState.value.copy(
+                    showPassword = !_uiState.value.showPassword
+                )
             }
         }
 

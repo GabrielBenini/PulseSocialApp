@@ -7,13 +7,15 @@ object LoginContract {
     data class State(
         val email: String = "",
         val password: String = "",
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        var showPassword: Boolean = false
     )
 
     sealed class Event{
 
         data class OnEmailChange(val email: String): Event()
         data class OnPassChange(val password: String): Event()
+        object  TogglePasswordVisibility: Event()
         object OnLoginClick: Event()
     }
 

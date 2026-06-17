@@ -38,7 +38,7 @@ class AppStartViewModel @Inject constructor(
             val userId = sessionManager.getUserId()
             _startDestination.value =
                 if (userId != null) AppNavigation.FeedScreen.route
-                else AppNavigation.SignUpScreen.route
+                else AppNavigation.LoginScreen.route
         }
     }
 }
@@ -62,6 +62,11 @@ fun NavGraph(
 
         composable(AppNavigation.LoginScreen.route) {
             LoginScreen(
+                onSignUpClick = {
+                    navController.navigate(AppNavigation.SignUpScreen.route){
+                        popUpTo(AppNavigation.LoginScreen.route) { inclusive = true }
+                    }
+                },
                 onLoginClicked = {
                     navController.navigate(AppNavigation.FeedScreen.route) {
                         popUpTo(AppNavigation.LoginScreen.route) { inclusive = true }
@@ -106,11 +111,11 @@ fun NavGraph(
 }
 
 sealed class AppNavigation(val route: String) {
-    object SignUpScreen: AppNavigation("signup")
-    object ProfileScreen: AppNavigation("profile")
-    object LoginScreen: AppNavigation("login")
-    object FeedScreen: AppNavigation("feed")
-    object CommentsScreen: AppNavigation("comments")
-    object PostScreen: AppNavigation("post")
-    object CommentsWithArgs: AppNavigation("comments/{postId}")
+    object SignUpScreen : AppNavigation("signup")
+    object ProfileScreen : AppNavigation("profile")
+    object LoginScreen : AppNavigation("login")
+    object FeedScreen : AppNavigation("feed")
+    object CommentsScreen : AppNavigation("comments")
+    object PostScreen : AppNavigation("post")
+    object CommentsWithArgs : AppNavigation("comments/{postId}")
 }

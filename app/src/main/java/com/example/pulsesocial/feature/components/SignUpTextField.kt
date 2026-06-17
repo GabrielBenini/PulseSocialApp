@@ -9,6 +9,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -20,7 +21,8 @@ fun SignUpTextField(
     onValueChange: (String) -> Unit,
     label: @Composable (() -> Unit),
     errorMessage: String? = null,
-    keyboardOptions: KeyboardOptions
+    keyboardOptions: KeyboardOptions,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
 
     OutlinedTextField(
@@ -31,6 +33,8 @@ fun SignUpTextField(
         leadingIcon = leadingIcon,
         onValueChange = onValueChange,
         label = label,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
         trailingIcon = trailingIcon,
         isError = errorMessage != null,
         supportingText = {

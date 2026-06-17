@@ -16,6 +16,7 @@ object SignUpContract {
         val emailError: String? = null,
         val passwordError: String? = null,
         val confirmPasswordError: String? = null,
+        var showPassword: Boolean = false
     )
 
     sealed class Event {
@@ -25,6 +26,7 @@ object SignUpContract {
         data class OnConfirmPasswordChange(val confirmPass: String): Event()
         data class OnImageChange(val image: Uri?): Event()
         object OnCreateClick: Event()
+        object TooglePasswordVisibility: Event()
     }
 
     sealed class Effect {

@@ -46,6 +46,12 @@ class LoginViewModel @Inject constructor(
             is LoginContract.Event.OnLoginClick -> {
                 login()
             }
+
+            is LoginContract.Event.TogglePasswordVisibility -> {
+                _uiState.value = _uiState.value.copy(
+                    showPassword = !_uiState.value.showPassword
+                )
+            }
         }
     }
 
