@@ -31,12 +31,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.pulsesocial.domain.response.PostResponse
 import com.example.pulsesocial.domain.response.UserSummary
 import com.example.pulsesocial.ui.theme.PulseSocialTheme
+import okhttp3.Cache
 
 @Composable
 fun PostCard(
@@ -91,7 +96,12 @@ fun PostCard(
                         shape = CircleShape
                     ) {
                         AsyncImage(
-                            model = post.author.imageUrl,
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(post.author.imageUrl)
+                                .crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .build(),
                             contentDescription = "Foto de perfil",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -134,7 +144,12 @@ fun PostCard(
                     ) {
 
                     AsyncImage(
-                        model = post.imageUrl,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(post.imageUrl)
+                            .crossfade(true)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .build(),
                         contentDescription = "Foto no Post",
                         modifier = Modifier
                             .padding(top = 16.dp)

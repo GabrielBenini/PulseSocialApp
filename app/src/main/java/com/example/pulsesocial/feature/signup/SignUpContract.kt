@@ -10,7 +10,12 @@ object SignUpContract {
         val password: String = "",
         val confirmPassword: String = "",
         val imageUrl: Uri? = null,
-        val isLoading: Boolean = false
+        var isLoading: Boolean = false,
+        var buttonEnabled: Boolean = false,
+        val usernameError: String? = null,
+        val emailError: String? = null,
+        val passwordError: String? = null,
+        val confirmPasswordError: String? = null,
     )
 
     sealed class Event {

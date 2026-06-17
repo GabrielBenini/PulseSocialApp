@@ -34,26 +34,60 @@ class SignUpViewModel @Inject constructor(
         when (event) {
 
             is SignUpContract.Event.OnUsernameChange -> {
+
+                val error = when {
+                    event.username.isBlank() -> "Nome é obrigatório"
+                    event.username.length < 3 -> "Nome deve ter pelo menos 3 caracteres"
+                    else -> null
+                }
+
                 _uiState.value = _uiState.value.copy(
-                    username = event.username
+                    username = event.username,
+                    usernameError = error
                 )
             }
 
             is SignUpContract.Event.OnEmailChange -> {
+
+                val error = when {
+                    event.email.isBlank() -> "Email é obrigatório"
+                    !android.util.Patterns.EMAIL_ADDRESS.matcher(event.email).matches() -> "Email inválido"
+                    else -> null
+                }
+
                 _uiState.value = _uiState.value.copy(
-                    email = event.email
+                    email = event.email,
+                    emailError = error
                 )
             }
 
             is SignUpContract.Event.OnPasswordChange -> {
+
+                val error = when {
+                    event.password.isBlank() -> "Senha é obrigatória"
+                    event.password.length < 8 -> "Senha precisa ter no mínimo 8 caracteres"
+                    !event.password.any{ it.isDigit() } -> "Senha precisa ter um numero"
+                    !event.password.any{ it.isUpperCase() } -> "Senha precisa ter uma letra maiuscula"
+                    else -> null
+
+                }
+
                 _uiState.value = _uiState.value.copy(
-                    password = event.password
+                    password = event.password,
+                    passwordError = error
                 )
             }
 
             is SignUpContract.Event.OnConfirmPasswordChange -> {
+
+                val error = when {
+                    event.confirmPass != _uiState.value.password -> "As senhas devem ser identicas"
+                    else -> null
+                }
+
                 _uiState.value = _uiState.value.copy(
-                    confirmPassword = event.confirmPass
+                    confirmPassword = event.confirmPass,
+                    confirmPasswordError = error
                 )
             }
 
@@ -88,7 +122,6 @@ class SignUpViewModel @Inject constructor(
             }
 
             try {
-
                 val response = repository.createUser(
                     userRequest = UserRequest(
                         username = _uiState.value.username,

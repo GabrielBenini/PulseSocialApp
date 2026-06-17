@@ -1,6 +1,8 @@
 package com.example.pulsesocial.feature.feed
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,9 +13,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.pulsesocial.R
 import com.example.pulsesocial.feature.components.PostCard
 
 @Composable
@@ -62,30 +67,34 @@ fun FeedScreenContent(
     onDeletePostClick: (Long) -> Unit
 ) {
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        LazyColumn(
-            verticalArrangement = Arrangement.Top
-        ) {
+        Image(
+            painter = painterResource(R.drawable.app_feed_background),
+            contentDescription = "Feed Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
 
-            items(
-                items = state.posts,
-                key = { it.id }
-            ) { post ->
+            LazyColumn(
+                verticalArrangement = Arrangement.Top
+            ) {
 
-                PostCard(
-                    post = post,
-                    currentUserId = state.currentUserId ?: -1,
-                    onLikeClick = { onLikeClick(post.id) },
-                    onDeletePostClick = {onDeletePostClick(post.id)}
-                )
+                items(
+                    items = state.posts,
+                    key = { it.id }
+                ) { post ->
+
+                    PostCard(
+                        post = post,
+                        currentUserId = state.currentUserId ?: -1,
+                        onLikeClick = { onLikeClick(post.id) },
+                        onDeletePostClick = { onDeletePostClick(post.id) }
+                    )
+                }
             }
-        }
     }
 }
 
