@@ -9,6 +9,7 @@ import com.example.pulsesocial.feature.feed.FeedScreen
 import com.example.pulsesocial.feature.main.MainScreen
 import com.example.pulsesocial.feature.navigation.NavGraph
 import com.example.pulsesocial.ui.theme.PulseSocialTheme
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

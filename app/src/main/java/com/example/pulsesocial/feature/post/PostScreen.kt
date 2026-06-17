@@ -1,8 +1,14 @@
 package com.example.pulsesocial.feature.post
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,13 +20,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.pulsesocial.feature.navigation.AppNavigation
+import coil3.compose.AsyncImage
 import com.example.pulsesocial.feature.post.PostContract.Event.OnContentChange
 import com.example.pulsesocial.feature.post.PostContract.Event.OnPostClick
 
@@ -50,7 +60,9 @@ fun PostScreen(
     PostScreenContent(
         state = state,
         onContentChange = { viewModel.handleEvent(OnContentChange(it)) },
-        onPostClick = { viewModel.handleEvent(OnPostClick) }
+        onPostClick = { uri ->
+            viewModel.handleEvent(PostContract.Event.OnPostClick(uri))
+        }
     )
 }
 
@@ -59,8 +71,16 @@ fun PostScreen(
 fun PostScreenContent(
     state: PostContract.State,
     onContentChange: (String) -> Unit,
-    onPostClick: () -> Unit
+    onPostClick: (Uri?) -> Unit
 ) {
+
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        selectedImageUri = uri
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -71,6 +91,30 @@ fun PostScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            Button(
+                onClick = {
+                    imagePicker.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            ) {
+                Text(
+                    "Escolher Imagem"
+                )
+            }
+
+            selectedImageUri?.let { uri ->
+
+                AsyncImage(
+                    model = uri,
+                    contentDescription = "Imagem Selecionada",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
             OutlinedTextField(
                 value = state.content,
                 onValueChange = onContentChange,
@@ -78,7 +122,7 @@ fun PostScreenContent(
             )
 
             Button(
-                onClick = onPostClick,
+                onClick = { onPostClick(selectedImageUri) },
                 enabled = !state.isLoading
             ) {
                 if (state.isLoading) {

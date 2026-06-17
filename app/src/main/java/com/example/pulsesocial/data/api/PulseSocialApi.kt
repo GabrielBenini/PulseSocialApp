@@ -2,9 +2,12 @@ package com.example.pulsesocial.data.api
 
 import com.example.pulsesocial.domain.request.LoginRequest
 import com.example.pulsesocial.domain.request.PostRequest
+import com.example.pulsesocial.domain.request.UserRequest
 import com.example.pulsesocial.domain.response.LikeResponse
 import com.example.pulsesocial.domain.response.LoginResponse
 import com.example.pulsesocial.domain.response.PostResponse
+import com.example.pulsesocial.domain.response.UserResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -13,6 +16,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PulseSocialApi {
+
+    @POST("users")
+    suspend fun createUser(
+        @Body request: UserRequest
+    ): Response<UserResponse>
 
     @GET("posts")
     suspend fun getPosts(

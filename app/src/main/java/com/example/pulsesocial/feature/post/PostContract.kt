@@ -1,5 +1,7 @@
 package com.example.pulsesocial.feature.post
 
+import android.net.Uri
+
 object PostContract {
 
     data class State(
@@ -11,7 +13,7 @@ object PostContract {
     sealed class Event {
         data class OnContentChange(val content: String): Event()
         data class OnImageUrlChange(val imageUrl: String): Event()
-        object OnPostClick : Event()
+        data class OnPostClick(val imagemUri: Uri?) : Event()
     }
 
     sealed class Effect {

@@ -125,14 +125,23 @@ fun PostCard(
                 )
             } else {
 
-                AsyncImage(
-                    model = post.imageUrl,
-                    contentDescription = "Foto no Post",
+                Surface(
                     modifier = Modifier
-                        .padding(top = 16.dp)
                         .fillMaxWidth()
-                )
+                        .height(200.dp)
+                        .padding(horizontal = 32.dp),
 
+                    ) {
+
+                    AsyncImage(
+                        model = post.imageUrl,
+                        contentDescription = "Foto no Post",
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
                 Text(
                     modifier = Modifier.padding(top = 16.dp),
                     text = post.content
@@ -187,7 +196,7 @@ fun PostCardPreview() {
     val mockPost = PostResponse(
         id = 1,
         content = "Esse é um post de teste no Pulse",
-        imageUrl = "",
+        imageUrl = "ss",
         createdAt = "",
         userId = 1,
         likesCount = 12,

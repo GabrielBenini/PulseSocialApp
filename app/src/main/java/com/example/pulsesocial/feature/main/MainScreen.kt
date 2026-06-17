@@ -46,6 +46,11 @@ fun MainScreen(
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    val topBarRouters = listOf(
+        AppNavigation.SignUpScreen.route,
+        AppNavigation.LoginScreen.route
+    )
+
     val bottomBarRouters = listOf(
         AppNavigation.FeedScreen.route,
         AppNavigation.ProfileScreen.route,
@@ -71,14 +76,16 @@ fun MainScreen(
         containerColor = MaterialTheme.colorScheme.background,
 
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Pulse",
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-            )
+            if (currentRoute !in topBarRouters) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Pulse",
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                )
+            }
         },
         bottomBar = {
             if (currentRoute in bottomBarRouters) {
@@ -100,7 +107,7 @@ fun MainScreen(
                                 navController.navigate(AppNavigation.FeedScreen.route)
                             }
                         ) {
-                            if (currentRoute == AppNavigation.FeedScreen.route){
+                            if (currentRoute == AppNavigation.FeedScreen.route) {
                                 Icon(
                                     Icons.Filled.Home,
                                     contentDescription = "Home Filled",
@@ -158,7 +165,7 @@ fun MainScreen(
                                 navController.navigate(AppNavigation.ProfileScreen.route)
                             }
                         ) {
-                            if (currentRoute == AppNavigation.ProfileScreen.route){
+                            if (currentRoute == AppNavigation.ProfileScreen.route) {
                                 Icon(
                                     Icons.Filled.Person,
                                     contentDescription = "Home Filled",

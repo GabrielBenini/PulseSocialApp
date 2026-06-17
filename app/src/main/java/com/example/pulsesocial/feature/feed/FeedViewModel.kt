@@ -94,6 +94,12 @@ class FeedViewModel @Inject constructor(
 
                 repository.deletePost(postId, userId)
 
+                val updatedPosts = _uiState.value.posts.filter { it.id != postId }
+
+                _uiState.value = _uiState.value.copy(
+                    posts = updatedPosts
+                )
+
                 _uiEffect.emit(
                     FeedContract.Effect.ShowSuccess("Post excluido com successo.")
                 )

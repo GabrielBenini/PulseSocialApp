@@ -18,6 +18,7 @@ import com.example.pulsesocial.feature.feed.FeedScreen
 import com.example.pulsesocial.feature.login.LoginScreen
 import com.example.pulsesocial.feature.post.PostScreen
 import com.example.pulsesocial.feature.profile.ProfileScreen
+import com.example.pulsesocial.feature.signup.SignUpScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class AppStartViewModel @Inject constructor(
             val userId = sessionManager.getUserId()
             _startDestination.value =
                 if (userId != null) AppNavigation.FeedScreen.route
-                else AppNavigation.LoginScreen.route
+                else AppNavigation.SignUpScreen.route
         }
     }
 }
@@ -81,6 +82,16 @@ fun NavGraph(
             ProfileScreen(navController)
         }
 
+        composable(AppNavigation.SignUpScreen.route) {
+            SignUpScreen(
+                onNavigateToLogin = {
+                    navController.navigate(AppNavigation.LoginScreen.route) {
+                        popUpTo(AppNavigation.SignUpScreen.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(
             route = AppNavigation.CommentsWithArgs.route,
             arguments = listOf(
@@ -95,6 +106,7 @@ fun NavGraph(
 }
 
 sealed class AppNavigation(val route: String) {
+    object SignUpScreen: AppNavigation("signup")
     object ProfileScreen: AppNavigation("profile")
     object LoginScreen: AppNavigation("login")
     object FeedScreen: AppNavigation("feed")

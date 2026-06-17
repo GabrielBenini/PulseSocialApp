@@ -1,10 +1,12 @@
 package com.example.pulsesocial.feature.post
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pulsesocial.data.datastore.UserPreferencesRepository
+import com.example.pulsesocial.data.repository.FirebaseStorageRepository
 import com.example.pulsesocial.data.repository.PostRepository
 import com.example.pulsesocial.data.session.SessionManager
 import com.example.pulsesocial.domain.request.PostRequest
@@ -20,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
+    private val storageRepository: FirebaseStorageRepository,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
@@ -49,13 +52,13 @@ class PostViewModel @Inject constructor(
             }
 
             is PostContract.Event.OnPostClick -> {
-                createPost()
+                createPost(event.imagemUri)
             }
 
         }
     }
 
-    private fun createPost(){
+    private fun createPost(imageUri: Uri?) {
 
         viewModelScope.launch {
 
@@ -65,28 +68,26 @@ class PostViewModel @Inject constructor(
 
             try {
 
-                val userId = sessionManager.getUserId()
+                val userId = sessionManager.getUserId() ?: return@launch
+
+                val imageUrl = imageUri?.let {
+                    storageRepository.uploadPostImage(it)
+                } ?: ""
 
                 repository.createPosts(
                     request = PostRequest(
                         content = _uiState.value.content,
-                        imageUrl = _uiState.value.imageUrl,
-                        userId = userId!!
+                        imageUrl = imageUrl,
+                        userId = userId
                     )
                 )
 
-                Log.d("POST_DEBUG", "Post criado")
 
                 _uiEffect.emit(
                     PostContract.Effect.ShowSuccess("Post criado com successo")
                 )
 
-
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false
-                )
-
-            } catch (e: Exception){
+            } catch (e: Exception) {
 
                 Log.e("POST_ERROR", e.message.toString())
 
@@ -94,6 +95,7 @@ class PostViewModel @Inject constructor(
                     PostContract.Effect.ShowError("Erro ao criar post")
                 )
 
+            } finally {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false
                 )
