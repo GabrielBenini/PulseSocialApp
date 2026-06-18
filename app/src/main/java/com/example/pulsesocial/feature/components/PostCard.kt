@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.ModeComment
+import androidx.compose.material.icons.sharp.Comment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -138,10 +141,8 @@ fun PostCard(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(horizontal = 32.dp),
-
-                    ) {
+                        .height(400.dp)
+                ) {
 
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
@@ -157,10 +158,6 @@ fun PostCard(
                         contentScale = ContentScale.FillBounds
                     )
                 }
-                Text(
-                    modifier = Modifier.padding(top = 16.dp),
-                    text = post.content
-                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -172,7 +169,7 @@ fun PostCard(
                     Icon(
                         imageVector = if (post.likedByUser) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Like",
-                        tint = if (post.likedByUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+                        tint = if (post.likedByUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
@@ -183,11 +180,9 @@ fun PostCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
-
                 TextButton(onClick = { }) {
                     Icon(
-                        imageVector = Icons.Default.ChatBubbleOutline,
+                        imageVector = Icons.Outlined.ModeComment,
                         contentDescription = "Comment",
                         tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
@@ -199,6 +194,21 @@ fun PostCard(
                         text = "${post.commentsCount}"
                     )
                 }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+            ) {
+
+                Text(
+                    text = post.author.username,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 12.dp).align(Alignment.Top)
+                )
+                Text(
+                    text = post.content
+                )
             }
         }
     }

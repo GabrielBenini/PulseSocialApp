@@ -104,7 +104,13 @@ fun MainScreen(
                         IconButton(
                             enabled = currentRoute != AppNavigation.FeedScreen.route,
                             onClick = {
-                                navController.navigate(AppNavigation.FeedScreen.route)
+                                navController.navigate(AppNavigation.FeedScreen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         ) {
                             if (currentRoute == AppNavigation.FeedScreen.route) {
@@ -135,7 +141,13 @@ fun MainScreen(
                         IconButton(
                             enabled = currentRoute != AppNavigation.PostScreen.route,
                             onClick = {
-                                navController.navigate(AppNavigation.PostScreen.route)
+                                navController.navigate(AppNavigation.PostScreen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         ) {
                             Icon(
@@ -162,7 +174,13 @@ fun MainScreen(
                         IconButton(
                             enabled = currentRoute != AppNavigation.ProfileScreen.route,
                             onClick = {
-                                navController.navigate(AppNavigation.ProfileScreen.route)
+                                navController.navigate(AppNavigation.ProfileScreen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         ) {
                             if (currentRoute == AppNavigation.ProfileScreen.route) {
