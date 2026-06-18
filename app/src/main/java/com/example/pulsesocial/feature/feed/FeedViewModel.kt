@@ -114,36 +114,40 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun likePost(postId: Long) {
-
         viewModelScope.launch {
 
+            val userId = sessionManager.getUserId() ?: return@launch
+
+            // 1. Guarda a lista original (se a internet cair, a gente volta pra ela)
+            val originalPosts = _uiState.value.posts
+            val post = originalPosts.find { it.id == postId } ?: return@launch
+
+            // 2. MUDA A UI IMEDIATAMENTE ( antes de chamar nossa api )
+            val updatedPosts = originalPosts.map {
+                if (it.id == postId) {
+                    it.copy(
+                        likesCount = if (it.likedByUser) it.likesCount - 1 else it.likesCount + 1,
+                        likedByUser = !it.likedByUser
+                    )
+                } else it
+            }
+
+            _uiState.value = _uiState.value.copy(
+                posts = updatedPosts
+            )
+
+            // 3. chama a api
             try {
-
-                val userId = sessionManager.getUserId() ?: return@launch
-
-                val post = _uiState.value.posts.find { it.id == postId } ?: return@launch
-
                 if (post.likedByUser) {
                     repository.unlikePost(postId, userId)
                 } else {
                     repository.likePost(postId, userId)
                 }
-
-                val updatedPosts = _uiState.value.posts.map {
-
-                    if (it.id == postId) {
-                        it.copy(
-                            likesCount = if (it.likedByUser) it.likesCount - 1 else it.likesCount + 1,
-                            likedByUser = !it.likedByUser
-                        )
-                    } else it
-                }
-
-                _uiState.value = _uiState.value.copy(
-                    posts = updatedPosts
-                )
-
             } catch (e: Exception) {
+                // 4. se der erro vamos desfazer a animacao do like
+                _uiState.value = _uiState.value.copy(
+                    posts = originalPosts
+                )
 
                 _uiEffect.emit(
                     FeedContract.Effect.ShowError("Erro ao curtir o post")
