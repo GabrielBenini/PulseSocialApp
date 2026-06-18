@@ -169,7 +169,9 @@ fun PostCard(
                     Icon(
                         imageVector = if (post.likedByUser) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Like",
-                        tint = if (post.likedByUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                        tint = if (post.likedByUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary.copy(
+                            alpha = 0.7f
+                        )
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
@@ -195,20 +197,22 @@ fun PostCard(
                     )
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-            ) {
-
-                Text(
-                    text = post.author.username,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(end = 12.dp).align(Alignment.Top)
-                )
-                Text(
-                    text = post.content
-                )
+            if (post.imageUrl.isNotEmpty() && post.content.isNotEmpty()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = post.author.username,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = post.content
+                    )
+                }
             }
         }
     }
