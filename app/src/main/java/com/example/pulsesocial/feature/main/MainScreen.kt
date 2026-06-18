@@ -1,20 +1,25 @@
 package com.example.pulsesocial.feature.main
 
+import android.R.attr.contentDescription
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.AppBarRow
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +52,10 @@ fun MainScreen(
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    val state by feedViewModel.uiState.collectAsState()
+
     val topBarRouters = listOf(
+        AppNavigation.PostScreen.route,
         AppNavigation.SignUpScreen.route,
         AppNavigation.LoginScreen.route
     )
@@ -54,7 +63,6 @@ fun MainScreen(
     val bottomBarRouters = listOf(
         AppNavigation.FeedScreen.route,
         AppNavigation.ProfileScreen.route,
-        AppNavigation.PostScreen.route
     )
 
     LaunchedEffect(Unit) {
@@ -62,7 +70,7 @@ fun MainScreen(
             when (effect) {
 
                 is FeedContract.Effect.ShowSuccess -> {
-                    feedViewModel.handleEvent(FeedContract.Event.OnRefresh)
+                    // snackbar
                 }
 
                 is FeedContract.Effect.ShowError -> {
@@ -84,6 +92,29 @@ fun MainScreen(
                             color = MaterialTheme.colorScheme.primary,
                         )
                     },
+
+                    actions = {
+                        IconButton(
+                            onClick = {
+                                feedViewModel.handleEvent(FeedContract.Event.OnRefresh)
+                            },
+                            enabled = !state.isLoading
+                        ) {
+                            if (state.isLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp),
+                                    strokeWidth = 2.dp,
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Refresh Feed",
+                                    modifier = Modifier
+                                )
+                            }
+                        }
+                    }
                 )
             }
         },
@@ -206,7 +237,8 @@ fun MainScreen(
 
         NavGraph(
             navController = navController,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding),
+            feedViewModel = feedViewModel
         )
     }
 }

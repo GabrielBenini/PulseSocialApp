@@ -8,6 +8,7 @@ object FeedContract {
         val posts: List<PostResponse> = emptyList(),
         val isLoading: Boolean = false,
         val currentUserId: Long? = null,
+        val refreshScrollTrigger: Int = 0
     )
 
     sealed class Event {

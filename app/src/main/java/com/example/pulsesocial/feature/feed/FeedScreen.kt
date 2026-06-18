@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -67,6 +68,14 @@ fun FeedScreenContent(
     onDeletePostClick: (Long) -> Unit
 ) {
 
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(state.refreshScrollTrigger) {
+        if (state.refreshScrollTrigger > 0){
+            listState.animateScrollToItem(0)
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -79,6 +88,7 @@ fun FeedScreenContent(
         )
 
             LazyColumn(
+                state = listState,
                 verticalArrangement = Arrangement.Top
             ) {
 

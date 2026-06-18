@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.pulsesocial.data.session.SessionManager
 import com.example.pulsesocial.feature.comments.CommentsScreen
 import com.example.pulsesocial.feature.feed.FeedScreen
+import com.example.pulsesocial.feature.feed.FeedViewModel
 import com.example.pulsesocial.feature.login.LoginScreen
 import com.example.pulsesocial.feature.post.PostScreen
 import com.example.pulsesocial.feature.profile.ProfileScreen
@@ -47,7 +48,8 @@ class AppStartViewModel @Inject constructor(
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: AppStartViewModel = hiltViewModel()
+    viewModel: AppStartViewModel = hiltViewModel(),
+    feedViewModel: FeedViewModel
 ) {
 
     val startDestination by viewModel.startDestination.collectAsState()
@@ -63,7 +65,7 @@ fun NavGraph(
         composable(AppNavigation.LoginScreen.route) {
             LoginScreen(
                 onSignUpClick = {
-                    navController.navigate(AppNavigation.SignUpScreen.route){
+                    navController.navigate(AppNavigation.SignUpScreen.route) {
                         popUpTo(AppNavigation.LoginScreen.route) { inclusive = true }
                     }
                 },
@@ -76,11 +78,19 @@ fun NavGraph(
         }
 
         composable(AppNavigation.FeedScreen.route) {
-            FeedScreen(navController)
+            FeedScreen(
+                navController,
+                feedViewModel
+            )
         }
 
         composable(AppNavigation.PostScreen.route) {
-            PostScreen(navController)
+            PostScreen(
+                navController,
+                onCloseButton = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(AppNavigation.ProfileScreen.route) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
@@ -16,7 +17,7 @@ import androidx.compose.ui.unit.dp
 fun SignUpTextField(
     modifier: Modifier = Modifier,
     value: String,
-    leadingIcon: @Composable (() -> Unit),
+    leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
     label: @Composable (() -> Unit),

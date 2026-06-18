@@ -38,6 +38,9 @@ class FeedViewModel @Inject constructor(
 
 
             is FeedContract.Event.OnRefresh -> {
+                _uiState.value = _uiState.value.copy(
+                    refreshScrollTrigger = _uiState.value.refreshScrollTrigger + 1
+                )
                 loadPosts()
             }
 
@@ -66,11 +69,6 @@ class FeedViewModel @Inject constructor(
                     currentUserId = userId,
                     isLoading = false,
                 )
-
-                _uiEffect.emit(
-                    FeedContract.Effect.ShowSuccess(message = "Sucesso ao Carregar Posts")
-                )
-
             } catch (e: Exception) {
 
                 _uiState.value = _uiState.value.copy(
@@ -84,7 +82,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(postId: Long){
+    private fun deletePost(postId: Long) {
 
         viewModelScope.launch {
 
@@ -104,7 +102,7 @@ class FeedViewModel @Inject constructor(
                     FeedContract.Effect.ShowSuccess("Post excluido com successo.")
                 )
 
-            } catch (e: Exception){
+            } catch (e: Exception) {
 
                 _uiEffect.emit(
                     FeedContract.Effect.ShowError("Erro ao excluir post")

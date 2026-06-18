@@ -1,6 +1,5 @@
 package com.example.pulsesocial.feature.login
 
-import android.os.Message
 
 object LoginContract {
 
