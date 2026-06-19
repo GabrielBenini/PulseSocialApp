@@ -205,11 +205,6 @@ fun PostCard(
                         .padding(top = 8.dp)
                 ) {
                     Text(
-                        text = post.author.username,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(
                         text = post.content
                     )
                 }
@@ -233,7 +228,7 @@ fun PostCardPreview() {
         likedByUser = false,
         author = UserSummary(
             1,
-            "Gabriel",
+            "Gabriel Benini Avalca",
             "https://doogspet.com/wp-content/uploads/freepik_edit-11-1.jpg"
         )
     )

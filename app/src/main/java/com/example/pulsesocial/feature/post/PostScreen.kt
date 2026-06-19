@@ -29,6 +29,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.ImageNotSupported
+import androidx.compose.material.icons.outlined.HideImage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -71,6 +73,8 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.pulsesocial.R
 import com.example.pulsesocial.domain.response.UserSummary
+import com.example.pulsesocial.feature.components.PostButton
+import com.example.pulsesocial.feature.components.PostTextField
 import com.example.pulsesocial.feature.components.SignUpTextField
 import com.example.pulsesocial.feature.post.PostContract.Event.OnContentChange
 import com.example.pulsesocial.feature.post.PostContract.Event.OnPostClick
@@ -104,7 +108,7 @@ fun PostScreen(
         state = state,
         onContentChange = { viewModel.handleEvent(OnContentChange(it)) },
         onPostClick = { uri -> viewModel.handleEvent(OnPostClick(uri)) },
-        onCloseButton = {onCloseButton()}
+        onCloseButton = { onCloseButton() }
     )
 }
 
@@ -213,8 +217,11 @@ fun PostScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                SignUpTextField(
-                    modifier = Modifier.height(300.dp),
+                PostTextField(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
+                        .height(300.dp),
                     value = state.content,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -225,63 +232,79 @@ fun PostScreenContent(
                         Text(
                             "No que você está pensando?",
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.fillMaxSize()
                         )
                     },
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
+                PostButton(
+                    onGalleryClick = {
+                        galleryLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    onCameraClick = {
+                        val uri = context.createImageFileUri()
+                        tempCameraUri = uri
+                        cameraLauncher.launch(uri)
+                    }
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)
+                    )
                 ) {
 
-                    Button(
-                        onClick = {
-                            galleryLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    if (selectedImageUri == null) {
+
+                        Column(
+                            modifier = Modifier
+                                .height(300.dp)
+                                .padding(24.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Icon(
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                                    .size(50.dp),
+                                imageVector = Icons.Outlined.HideImage,
+                                contentDescription = "Image",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+
+                            Text(
+                                "Nenhuma mídia selecionada",
+                                fontWeight = FontWeight.SemiBold
+                            )
+
+                            Text(
+                                "Adicione uma foto ao seu post",
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
                             )
                         }
-                    ) {
-                        Icon(Icons.Default.Image, contentDescription = "Galeria")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            "Galeria"
-                        )
-                    }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    } else
 
-                    Button(
-                        onClick = {
-                            val uri = context.createImageFileUri()
-                            tempCameraUri = uri
-                            cameraLauncher.launch(uri)
+                        selectedImageUri?.let { uri ->
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Image Preview",
+                                contentScale = ContentScale.Crop
+                            )
                         }
-                    ) {
-                        Icon(Icons.Default.CameraAlt, contentDescription = "Câmera")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Câmera")
                     }
-                }
-
-                selectedImageUri?.let { uri ->
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = "Image Preview",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
                 }
             }
         }
     }
 
-}
-
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun PostScreenPreview() {
 
