@@ -94,24 +94,27 @@ fun MainScreen(
                     },
 
                     actions = {
-                        IconButton(
-                            onClick = {
-                                feedViewModel.handleEvent(FeedContract.Event.OnRefresh)
-                            },
-                            enabled = !state.isLoading
-                        ) {
-                            if (state.isLoading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .size(20.dp),
-                                    strokeWidth = 2.dp,
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Default.Refresh,
-                                    contentDescription = "Refresh Feed",
-                                    modifier = Modifier
-                                )
+                        if (currentRoute == AppNavigation.FeedScreen.route) {
+
+                            IconButton(
+                                onClick = {
+                                    feedViewModel.handleEvent(FeedContract.Event.OnRefresh)
+                                },
+                                enabled = !state.isLoading
+                            ) {
+                                if (state.isLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(20.dp),
+                                        strokeWidth = 2.dp,
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        contentDescription = "Refresh Feed",
+                                        modifier = Modifier
+                                    )
+                                }
                             }
                         }
                     }

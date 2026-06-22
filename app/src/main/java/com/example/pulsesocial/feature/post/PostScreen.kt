@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -209,7 +210,7 @@ fun PostScreenContent(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding)
@@ -217,92 +218,102 @@ fun PostScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                PostTextField(
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    value = state.content,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    onValueChange = onContentChange,
-                    label = {
-                        Text(
-                            "No que você está pensando?",
-                            textAlign = TextAlign.Start,
-                        )
-                    },
-                )
+                item {
 
-                PostButton(
-                    onGalleryClick = {
-                        galleryLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    onCameraClick = {
-                        val uri = context.createImageFileUri()
-                        tempCameraUri = uri
-                        cameraLauncher.launch(uri)
-                    }
-                )
-
-                Surface(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)
+                    PostTextField(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        value = state.content,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        onValueChange = onContentChange,
+                        label = {
+                            Text(
+                                "No que você está pensando?",
+                                textAlign = TextAlign.Start,
+                            )
+                        },
                     )
-                ) {
 
-                    if (selectedImageUri == null) {
+                }
 
-                        Column(
-                            modifier = Modifier
-                                .height(300.dp)
-                                .padding(24.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                            Icon(
+                item {
+
+                    PostButton(
+                        onGalleryClick = {
+                            galleryLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        onCameraClick = {
+                            val uri = context.createImageFileUri()
+                            tempCameraUri = uri
+                            cameraLauncher.launch(uri)
+                        }
+                    )
+                }
+
+                item {
+
+                    Surface(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)
+                        )
+                    ) {
+
+                        if (selectedImageUri == null) {
+
+                            Column(
                                 modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                                    .size(50.dp),
-                                imageVector = Icons.Outlined.HideImage,
-                                contentDescription = "Image",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                                    .height(300.dp)
+                                    .padding(24.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .padding(bottom = 12.dp)
+                                        .size(50.dp),
+                                    imageVector = Icons.Outlined.HideImage,
+                                    contentDescription = "Image",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
 
-                            Text(
-                                "Nenhuma mídia selecionada",
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                Text(
+                                    "Nenhuma mídia selecionada",
+                                    fontWeight = FontWeight.SemiBold
+                                )
 
-                            Text(
-                                "Adicione uma foto ao seu post",
-                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
-                            )
-                        }
+                                Text(
+                                    "Adicione uma foto ao seu post",
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+                                )
+                            }
 
-                    } else
+                        } else
 
-                        selectedImageUri?.let { uri ->
-                            AsyncImage(
-                                model = uri,
-                                contentDescription = "Image Preview",
-                                contentScale = ContentScale.Crop
-                            )
-                        }
+                            selectedImageUri?.let { uri ->
+                                AsyncImage(
+                                    model = uri,
+                                    contentDescription = "Image Preview",
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                     }
                 }
             }
         }
     }
+}
 
 @Preview()
 @Composable
