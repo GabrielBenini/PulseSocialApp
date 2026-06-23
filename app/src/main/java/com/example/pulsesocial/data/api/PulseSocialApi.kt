@@ -1,8 +1,10 @@
 package com.example.pulsesocial.data.api
 
+import com.example.pulsesocial.domain.request.CommentRequest
 import com.example.pulsesocial.domain.request.LoginRequest
 import com.example.pulsesocial.domain.request.PostRequest
 import com.example.pulsesocial.domain.request.UserRequest
+import com.example.pulsesocial.domain.response.CommentResponse
 import com.example.pulsesocial.domain.response.LikeResponse
 import com.example.pulsesocial.domain.response.LoginResponse
 import com.example.pulsesocial.domain.response.PostResponse
@@ -54,4 +56,13 @@ interface PulseSocialApi {
         @Path("postId") postId: Long,
         @Query("userId") userId: Long
     )
+
+    @GET("posts/{postId}/comments")
+    suspend fun getComments(@Path("postId") postId: Long): List<CommentResponse>
+
+    @POST("posts/{postId}/comments")
+    suspend fun createComment(
+        @Path("postId") postId: Long,
+        @Body request: CommentRequest
+    ): CommentResponse
 }

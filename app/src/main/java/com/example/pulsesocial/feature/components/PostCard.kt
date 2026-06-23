@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,13 +24,20 @@ import androidx.compose.material.icons.outlined.ModeComment
 import androidx.compose.material.icons.sharp.Comment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -43,9 +51,12 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.pulsesocial.domain.response.PostResponse
 import com.example.pulsesocial.domain.response.UserSummary
+import com.example.pulsesocial.feature.comments.CommentsScreen
 import com.example.pulsesocial.ui.theme.PulseSocialTheme
 import okhttp3.Cache
+import java.nio.file.WatchEvent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostCard(
     post: PostResponse,
@@ -53,6 +64,22 @@ fun PostCard(
     onLikeClick: () -> Unit,
     onDeletePostClick: () -> Unit,
 ) {
+
+    val sheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true)
+    var showSheet by remember { mutableStateOf(false) }
+
+    if (showSheet) {
+        ModalBottomSheet(
+            containerColor = MaterialTheme.colorScheme.surface,
+            onDismissRequest = { showSheet = false },
+            sheetState = sheetState,
+        ) {
+            CommentsScreen(
+                postId = post.id,
+                modifier = Modifier.fillMaxHeight(0.75f)
+            )
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -182,7 +209,9 @@ fun PostCard(
                     )
                 }
 
-                TextButton(onClick = { }) {
+                TextButton(onClick = {
+                    showSheet = true
+                }) {
                     Icon(
                         imageVector = Icons.Outlined.ModeComment,
                         contentDescription = "Comment",

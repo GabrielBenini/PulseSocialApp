@@ -1,7 +1,9 @@
 package com.example.pulsesocial.data.repository
 
 import com.example.pulsesocial.data.api.PulseSocialApi
+import com.example.pulsesocial.domain.request.CommentRequest
 import com.example.pulsesocial.domain.request.PostRequest
+import com.example.pulsesocial.domain.response.CommentResponse
 import com.example.pulsesocial.domain.response.LikeResponse
 import com.example.pulsesocial.domain.response.PostResponse
 import javax.inject.Inject
@@ -28,6 +30,15 @@ class PostRepository @Inject constructor(
 
     suspend fun deletePost(postId: Long, userId: Long){
         return api.deletePost(postId, userId)
+    }
+
+    suspend fun getComments(postId: Long): List<CommentResponse> {
+        return api.getComments(postId)
+    }
+
+    suspend fun createComment(postId: Long, userId: Long, content: String){
+        val request = CommentRequest(content = content, postId = postId, userId = userId)
+        api.createComment(postId, request)
     }
 
 
