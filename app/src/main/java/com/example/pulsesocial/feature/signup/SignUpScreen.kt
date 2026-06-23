@@ -334,7 +334,6 @@ fun SignUpScreenContent(
                 )
 
                 SignUpTextField(
-                    modifier = modifier.padding(bottom = 8.dp),
                     value = state.confirmPassword,
                     leadingIcon = {
                         Icon(
@@ -343,21 +342,28 @@ fun SignUpScreenContent(
                         )
                     },
                     onValueChange = { onConfirmPasswordChange(it) },
-                    label = { Text("Confirme sua senha") },
+                    label = { Text("Crie uma senha segura") },
+                    visualTransformation = if (state.showPassword)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(
-                            onClick = {}
+                            onClick = { onTogglePassword() }
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
-                                contentDescription = "Visibilidade da senha"
+                                if (state.showPassword)
+                                    Icons.Outlined.Visibility
+                                else
+                                    Icons.Outlined.VisibilityOff,
+                                contentDescription = "Show pass"
                             )
                         }
                     },
                     errorMessage = state.confirmPasswordError,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     )
                 )
             }
