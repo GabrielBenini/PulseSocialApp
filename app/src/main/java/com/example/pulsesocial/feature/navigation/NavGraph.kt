@@ -19,6 +19,7 @@ import com.example.pulsesocial.feature.feed.FeedViewModel
 import com.example.pulsesocial.feature.login.LoginScreen
 import com.example.pulsesocial.feature.post.PostScreen
 import com.example.pulsesocial.feature.profile.ProfileScreen
+import com.example.pulsesocial.feature.settings.SettingsScreen
 import com.example.pulsesocial.feature.signup.SignUpScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -94,7 +95,12 @@ fun NavGraph(
         }
 
         composable(AppNavigation.ProfileScreen.route) {
-            ProfileScreen(navController)
+            ProfileScreen(
+                navController,
+                onSettingsClick = {
+                    navController.navigate(AppNavigation.SettingsScreen.route)
+                }
+            )
         }
 
         composable(AppNavigation.SignUpScreen.route) {
@@ -104,6 +110,12 @@ fun NavGraph(
                         popUpTo(AppNavigation.SignUpScreen.route) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(AppNavigation.SettingsScreen.route) {
+            SettingsScreen(
+                navController = navController
             )
         }
 
@@ -127,5 +139,6 @@ sealed class AppNavigation(val route: String) {
     object FeedScreen : AppNavigation("feed")
     object CommentsScreen : AppNavigation("comments")
     object PostScreen : AppNavigation("post")
+    object SettingsScreen : AppNavigation("settings")
     object CommentsWithArgs : AppNavigation("comments/{postId}")
 }
